@@ -3,6 +3,8 @@ package com.hoho.android.usbserial.examples;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+import static java.lang.System.in;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -294,12 +296,10 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
 
         // Set the onClickListener for the Serial Connect button to disconnect/connect all device widgets
         sercon.setOnClickListener(new View.OnClickListener() {
-            int wificlick = 0;
             @Override
             public void onClick(View v) {
-                wificlick += 1;
                 // If the Serial Connect button is set to connect, connect all device widgets
-                if (wificlick % 2 == 1) {
+                if (sercon.getText().toString().equals("Serial Connect")) {
                     sercon.setText(R.string.serial_disconnect);
                     sercon.setBackgroundColor(Color.parseColor("#006d2d"));
 //                    status.setText("CONNECTED");
@@ -355,7 +355,8 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
                     sercon.setAlpha(1);
                     sercon.setText(getString(R.string.serial_connect));
                     sercon.setBackgroundColor(Color.parseColor("#990000"));
-                    // Set all device widgets to "DISCONNECTED" status
+                    // Set all device widgets to "DISCONNECTED" status if the switch has
+                    // just been toggled to serial mode
                     for(View var: inflated){
                         Button status = var.findViewById(R.id.status);
                         status.setClickable(false);
@@ -514,6 +515,7 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
                     Button stat = myLayout1.findViewById(R.id.status);
                     TextView wifiSSID = myLayout1.findViewById(R.id.image_view20ci);
                     TextView disp = myLayout1.findViewById(R.id.textView20ci);
+                    TextView data = myLayout1.findViewById(R.id.data);
 //                    Toast.makeText(MainActivity.this, "wifi"+i, Toast.LENGTH_SHORT).show();
                     wifiSSID.setText(sh.getString("wifi" + i, ""));
  //                   Toast.makeText(MainActivity.this, ""+i, Toast.LENGTH_SHORT).show();
@@ -524,6 +526,13 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
                     } else {
                         stati.add(getString(R.string.disconnected));
                     }
+
+                    // Store the previous connection status for WiFi mode for each device widget
+                    if (sh.getString("data" + i, "").equals("CONNECTED")) {
+                        data.setText(getString(R.string.connected));
+                    } else {
+                        data.setText(getString(R.string.disconnected));
+                    }
                 }
             }
         }
@@ -532,10 +541,30 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
         if(serconbool){
             sercon.setText(getString(R.string.serial_disconnect));
             sercon.setBackgroundColor(Color.parseColor("#006d2d"));
+            for(int i = 1; i <= inflated.size(); i++){
+                View var = inflated.get(i-1);
+                Button status = var.findViewById(R.id.status);
+                TextView disp = var.findViewById(R.id.textView20ci);
+                status.setText(getString(R.string.connected));
+                status.setTextColor(Color.parseColor("#0f9d58"));
+                status.setBackgroundColor(Color.parseColor("#d3d3d3"));
+                disp.setText(getString(R.string.clear));
+                disp.setTextColor(Color.parseColor("#0f9d58"));
+            }
         }
         else{
             sercon.setText(getString(R.string.serial_connect));
             sercon.setBackgroundColor(Color.parseColor("#990000"));
+            for(int i = 1; i <= inflated.size(); i++){
+                View var = inflated.get(i-1);
+                Button status = var.findViewById(R.id.status);
+                TextView disp = var.findViewById(R.id.textView20ci);
+                status.setText(getString(R.string.disconnected));
+                status.setTextColor(Color.parseColor("#990000"));
+                status.setBackgroundColor(Color.parseColor("#d3d3d3"));
+                disp.setText(getString(R.string.inactive));
+                disp.setTextColor(Color.parseColor("#636363"));
+            }
         }
 
         // Set the mode to be serial or WiFi based on stored data
@@ -552,8 +581,6 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
             for(int i = 1; i <= inflated.size(); i++){
                 View var = inflated.get(i-1);
                 Button status = var.findViewById(R.id.status);
-                TextView data = var.findViewById(R.id.data);
-                data.setText(sh.getString("data" + i, ""));
                 status.setClickable(false);
             }
         }

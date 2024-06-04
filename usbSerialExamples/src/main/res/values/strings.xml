@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_title">TOSSIT Dashboard</string>
+    <string name="app_name">TOSSIT Dashboard</string>
+    <string name="devices">USB Devices</string>
+    <string name="disconnected">DISCONNECTED</string>
+    <string name="connected">CONNECTED</string>
+    <string name="inactive">INACTIVE</string>
+    <string name="clear">CLEAR</string>
+    <string name="serial_disconnect">Serial Disconnect</string>
+    <string name="serial_connect">Serial Connect</string>
+</resources>

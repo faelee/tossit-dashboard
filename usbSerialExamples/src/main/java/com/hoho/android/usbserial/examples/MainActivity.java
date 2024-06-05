@@ -536,6 +536,35 @@ public class MainActivity extends AppCompatActivity { //implements FragmentManag
                 }
             }
         }
+        else{ // If the device widgets are already displayed, update what each widget displays
+            for (int i = 1; i <= mViewsCount; i++) {
+                // Update the device widget if it is not designated to be deleted
+                if(!(deletebool && sh.getInt("ID"+i,-2) == id)) {
+                    View myLayout1 = inflated.get(i-1);
+                    Button stat = myLayout1.findViewById(R.id.status);
+                    TextView wifiSSID = myLayout1.findViewById(R.id.image_view20ci);
+                    TextView disp = myLayout1.findViewById(R.id.textView20ci);
+                    TextView data = myLayout1.findViewById(R.id.data);
+//                    Toast.makeText(MainActivity.this, "wifi"+i, Toast.LENGTH_SHORT).show();
+                    wifiSSID.setText(sh.getString("wifi" + i, ""));
+                    //                   Toast.makeText(MainActivity.this, ""+i, Toast.LENGTH_SHORT).show();
+
+                    // ArrayList stati stores whether each device is connected in WiFi mode or not
+                    if (sh.getString("" + i, "").equals("CONNECTED")) {
+                        stati.add(getString(R.string.connected));
+                    } else {
+                        stati.add(getString(R.string.disconnected));
+                    }
+
+                    // Store the previous connection status for WiFi mode for each device widget
+                    if (sh.getString("data" + i, "").equals("CONNECTED")) {
+                        data.setText(getString(R.string.connected));
+                    } else {
+                        data.setText(getString(R.string.disconnected));
+                    }
+                }
+            }
+        }
 
         // Set the serial mode to be connected or disconnected based on stored data
         if(serconbool){
